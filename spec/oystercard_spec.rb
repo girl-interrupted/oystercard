@@ -19,4 +19,12 @@ describe Oystercard do
       expect{ card.top_up(20) }.to raise_error 'Your credit cannot go over 90'
     end
   end
+
+  describe '#deduct' do
+    it 'deducts money from balance when customer travels' do
+      subject.top_up(90)
+      subject.deduct(5)
+      expect(subject.balance).to eq 85
+    end
+  end
 end
