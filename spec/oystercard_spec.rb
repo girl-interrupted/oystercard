@@ -12,5 +12,11 @@ describe Oystercard do
       subject.top_up(20)
       expect(subject.balance).to eq 20
     end
+
+    it 'throws an error if customer tries to increase credit above 90' do
+      card = Oystercard.new
+      card.top_up(80)
+      expect{ card.top_up(20) }.to raise_error 'Your credit cannot go over 90'
+    end
   end
 end
