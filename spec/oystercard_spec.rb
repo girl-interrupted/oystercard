@@ -31,28 +31,37 @@ describe Oystercard do
       expect(subject.in_journey).to eq false
     end 
   end
-  
+
   describe '#touch_in' do
+    let(:station){ double :station }
+
     it 'changes in_journey to true' do
       subject.top_up(2)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject.in_journey).to eq true
     end
     it 'fails if the balance is less than £1' do
-      expect{ subject.touch_in }.to raise_error ("Your balance is less than £1")
+      expect{ subject.touch_in(station) }.to raise_error ("Your balance is less than £1")
+    end
+    it 'saves the entry station after the touch in' do
+      subject.top_up(5)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
     end
   end
 
   describe '#touch_out' do
+    let(:station){ double :station }
+    
     it 'changes in_journey to false' do
       subject.top_up(2)
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
       expect(subject.in_journey).to eq false
     end
     it 'deducts the minimum fare from balance' do
       subject.top_up(5)
-      subject.touch_in
+      subject.touch_in(station)
       expect {subject.touch_out}.to change {subject.balance}.by(-Oystercard::MIN_FARE)
     end
   end
