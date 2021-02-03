@@ -18,6 +18,12 @@ describe Oystercard do
       card.top_up(80)
       expect{ card.top_up(20) }.to raise_error 'Your credit cannot go over 90'
     end
+ 
+    it 'make top_up throw error if balance would be bigger than new limit' do
+      maximum_balance = Oystercard::LIMIT
+      subject.top_up(maximum_balance)
+      expect{ subject.top_up(1) }.to raise_error("Your credit cannot go over #{maximum_balance}")
+    end
   end
 
   describe '#deduct' do
@@ -25,6 +31,25 @@ describe Oystercard do
       subject.top_up(90)
       subject.deduct(5)
       expect(subject.balance).to eq 85
+    end
+  end
+
+  describe 'in_journey' do
+    it 'checks it starts as false before beginning of the journey' do
+      expect(subject.in_journey).to eq false
+    end 
+  end
+  describe '#touch_in' do
+    it 'changes in_journey to true' do
+      subject.touch_in
+      expect(subject.in_journey).to eq true
+    end
+  end
+  describe '#touch_out' do
+    it 'changes in_journey to false' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject.in_journey).to eq false
     end
   end
 end
